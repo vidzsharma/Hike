@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Briefs - Rush Gaming CI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border-radius: 16px 16px 0 0 !important;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .brief-content {
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .brief-content h1, .brief-content h2, .brief-content h3 {
+            color: #1f2937;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .brief-content h1 {
+            font-size: 2.5rem;
+            border-bottom: 3px solid #6366f1;
+            padding-bottom: 0.5rem;
+        }
+        
+        .brief-content h2 {
+            font-size: 2rem;
+            color: #6366f1;
+        }
+        
+        .brief-content h3 {
+            font-size: 1.5rem;
+            color: #8b5cf6;
+        }
+        
+        .brief-content ul, .brief-content ol {
+            margin-left: 2rem;
+        }
+        
+        .brief-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .brief-content blockquote {
+            border-left: 4px solid #6366f1;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #6b7280;
+        }
+        
+        .brief-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .brief-content th, .brief-content td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .brief-content th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+        
+        .brief-meta {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .brief-meta .badge {
+            font-size: 0.8rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 0.5rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line me-2"></i>
+                Rush Gaming CI
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="/briefs">
+                    <i class="fas fa-file-alt me-1"></i>Briefs
+                </a>
+                <a class="nav-link" href="/config">
+                    <i class="fas fa-cog me-1"></i>Config
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h2 mb-2">Weekly Competitive Intelligence Briefs</h1>
+                        <p class="text-muted mb-0">Comprehensive analysis of competitor activities and market trends</p>
+                    </div>
+                    <a href="/" class="btn btn-back text-white">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if briefs %}
+        <!-- Briefs List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Available Briefs
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="briefTabs" role="tablist">
+                            {% for brief in briefs %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {% if loop.first %}active{% endif %}" 
+                                        id="brief-{{ loop.index }}-tab" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#brief-{{ loop.index }}" 
+                                        type="button" 
+                                        role="tab">
+                                    {{ brief.filename }}
+                                </button>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <div class="tab-content mt-3" id="briefTabsContent">
+                            {% for brief in briefs %}
+                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" 
+                                 id="brief-{{ loop.index }}" 
+                                 role="tabpanel">
+                                
+                                <div class="brief-meta">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>File:</strong> {{ brief.filename }}
+                                        </div>
+                                        <div class="col-md-6 text-end">
+                                            <strong>Generated:</strong> {{ brief.date }}
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span class="badge bg-primary">Weekly Brief</span>
+                                        <span class="badge bg-success">Competitive Intelligence</span>
+                                        <span class="badge bg-info">Market Analysis</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="brief-content">
+                                    {{ brief.content | safe }}
+                                </div>
+                                
+                                <div class="mt-4 pt-3 border-top">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-outline-primary" onclick="downloadBrief('{{ brief.filename }}')">
+                                                <i class="fas fa-download me-2"></i>
+                                                Download PDF
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6 text-end">
+                                            <button class="btn btn-outline-secondary" onclick="shareBrief('{{ brief.filename }}')">
+                                                <i class="fas fa-share me-2"></i>
+                                                Share
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>No Briefs Available</h3>
+                            <p class="mb-4">Weekly competitive intelligence briefs will appear here once generated.</p>
+                            <a href="/" class="btn btn-primary">
+                                <i class="fas fa-play me-2"></i>
+                                Run Pipeline to Generate Briefs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Initialize syntax highlighting
+        Prism.highlightAll();
+        
+        function downloadBrief(filename) {
+            // This would normally trigger a download
+            alert('Download functionality would be implemented here for ' + filename);
+        }
+        
+        function shareBrief(filename) {
+            // This would normally open a share dialog
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Rush Gaming CI Brief: ' + filename,
+                    text: 'Weekly competitive intelligence brief from Rush Gaming CI system',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to copying URL
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Brief URL copied to clipboard!');
+                });
+            }
+        }
+        
+        // Auto-refresh briefs every 5 minutes
+        setInterval(() => {
+            window.location.reload();
+        }, 300000);
+    </script>
+</body>
+</html> 

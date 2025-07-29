@@ -1,0 +1,11 @@
+2025-07-29 10:38:03,858 - rush_ci.summarise - WARNING - __init__:27 - OpenAI API key not configured
+2025-07-29 10:38:03,861 - rush_ci.fetch - INFO - fetch_all_sources:38 - Starting data fetch for all competitors
+2025-07-29 10:38:03,861 - rush_ci.fetch - INFO - fetch_all_sources:48 - Fetching data for Mobile Premier League
+2025-07-29 10:38:07,684 - rush_ci.fetch - INFO - fetch_all_sources:54 - Fetched 10 blog posts for Mobile Premier League
+2025-07-29 10:40:12,514 - rush_ci.summarise - WARNING - __init__:27 - OpenAI API key not configured
+2025-07-29 10:40:12,515 - rush_ci.fetch - INFO - fetch_all_sources:38 - Starting data fetch for all competitors
+2025-07-29 10:40:12,515 - rush_ci.fetch - INFO - fetch_all_sources:48 - Fetching data for Mobile Premier League
+2025-07-29 10:40:16,968 - rush_ci.fetch - INFO - fetch_all_sources:54 - Fetched 10 blog posts for Mobile Premier League
+2025-07-29 10:40:21,681 - rush_ci.fetch - INFO - fetch_all_sources:64 - Fetched 0 tweets for Mobile Premier League
+2025-07-29 10:40:25,323 - rush_ci.fetch - INFO - fetch_linkedin_posts:296 - LinkedIn scraping for mobile-premier-league - requires proper auth setup
+2025-07-29 10:40:25,323 - rush_ci.fetch - INFO - fetch_all_sources:74 - Fetched 0 LinkedIn posts for Mobile Premier League

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rush Gaming CI Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 16px 16px 0 0 !important;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-running { background-color: var(--success-color); }
+        .status-error { background-color: var(--danger-color); }
+        .status-warning { background-color: var(--warning-color); }
+        
+        .alert-card {
+            border-left: 4px solid var(--danger-color);
+            transition: all 0.3s ease;
+        }
+        
+        .alert-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .competitor-card {
+            transition: all 0.3s ease;
+        }
+        
+        .competitor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .metric-label {
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .pipeline-running .loading-spinner {
+            display: inline-block;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line me-2"></i>
+                Rush Gaming CI
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/briefs">
+                    <i class="fas fa-file-alt me-1"></i>Briefs
+                </a>
+                <a class="nav-link" href="/config">
+                    <i class="fas fa-cog me-1"></i>Config
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="h3 mb-2">Competitive Intelligence Dashboard</h1>
+                                <p class="text-muted mb-0">
+                                    <span class="status-indicator status-running"></span>
+                                    System Status: <span id="system-status">Loading...</span>
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button id="run-pipeline-btn" class="btn btn-primary">
+                                    <i class="fas fa-play me-2"></i>
+                                    Run Pipeline
+                                </button>
+                                <div class="loading-spinner spinner-border spinner-border-sm text-light ms-2" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card metric-card">
+                    <div class="metric-value" id="total-competitors">5</div>
+                    <div class="metric-label">Competitors</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card metric-card">
+                    <div class="metric-value" id="total-alerts">0</div>
+                    <div class="metric-label">Active Alerts</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card metric-card">
+                    <div class="metric-value" id="data-sources">4</div>
+                    <div class="metric-label">Data Sources</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card metric-card">
+                    <div class="metric-value" id="last-update">--</div>
+                    <div class="metric-label">Last Update</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Competitors -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-users me-2"></i>
+                        Competitors Overview
+                    </div>
+                    <div class="card-body">
+                        <div id="competitors-grid" class="row">
+                            <!-- Competitors will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Data -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-database me-2"></i>
+                        Recent Data
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-data">
+                            <p class="text-muted">No recent data available. Run the pipeline to fetch data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Sidebar -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-bell me-2"></i>
+                        Recent Alerts
+                    </div>
+                    <div class="card-body">
+                        <div id="alerts-list">
+                            <!-- Alerts will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script>
+        // Initialize without Socket.IO for now
+        
+        // Global variables
+        let systemStatus = 'loading';
+        let competitors = [];
+        let alerts = [];
+        
+        // DOM elements
+        const runPipelineBtn = document.getElementById('run-pipeline-btn');
+        const systemStatusEl = document.getElementById('system-status');
+        const competitorsGrid = document.getElementById('competitors-grid');
+        const alertsList = document.getElementById('alerts-list');
+        const recentData = document.getElementById('recent-data');
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStatus();
+            loadCompetitors();
+            loadAlerts();
+            loadRecentData();
+            
+            // Set up real-time updates
+            setInterval(loadSystemStatus, 30000); // Update every 30 seconds
+            setInterval(loadAlerts, 60000); // Update alerts every minute
+        });
+        
+        // Pipeline status polling (since we removed Socket.IO)
+        function checkPipelineStatus() {
+            // Poll for pipeline status every 5 seconds when running
+            if (runPipelineBtn.classList.contains('pipeline-running')) {
+                setTimeout(() => {
+                    loadSystemStatus();
+                    loadRecentData();
+                    checkPipelineStatus();
+                }, 5000);
+            }
+        }
+        
+        // Event listeners
+        runPipelineBtn.addEventListener('click', function() {
+            runPipeline();
+        });
+        
+        // API functions
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                systemStatus = data.status;
+                systemStatusEl.textContent = data.status;
+                
+                if (data.has_data) {
+                    document.getElementById('last-update').textContent = 'Available';
+                }
+                
+            } catch (error) {
+                console.error('Error loading system status:', error);
+                systemStatus = 'error';
+                systemStatusEl.textContent = 'Error';
+            }
+        }
+        
+        async function loadCompetitors() {
+            try {
+                const response = await fetch('/api/competitors');
+                competitors = await response.json();
+                
+                renderCompetitors();
+                
+            } catch (error) {
+                console.error('Error loading competitors:', error);
+            }
+        }
+        
+        async function loadAlerts() {
+            try {
+                const response = await fetch('/api/alerts');
+                alerts = await response.json();
+                
+                renderAlerts();
+                document.getElementById('total-alerts').textContent = alerts.length;
+                
+            } catch (error) {
+                console.error('Error loading alerts:', error);
+            }
+        }
+        
+        async function loadRecentData() {
+            try {
+                const response = await fetch('/api/data');
+                const data = await response.json();
+                
+                if (data.data && data.data.length > 0) {
+                    renderRecentData(data.data);
+                } else {
+                    recentData.innerHTML = '<p class="text-muted">No recent data available. Run the pipeline to fetch data.</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading recent data:', error);
+            }
+        }
+        
+        async function runPipeline() {
+            try {
+                runPipelineBtn.classList.add('pipeline-running');
+                showToast('Starting pipeline...', 'info');
+                
+                const response = await fetch('/api/run-pipeline', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'started') {
+                    showToast('Pipeline started successfully!', 'success');
+                    checkPipelineStatus(); // Start polling for status
+                } else {
+                    showToast('Failed to start pipeline: ' + data.message, 'error');
+                    runPipelineBtn.classList.remove('pipeline-running');
+                }
+                
+            } catch (error) {
+                console.error('Error running pipeline:', error);
+                showToast('Error running pipeline: ' + error.message, 'error');
+                runPipelineBtn.classList.remove('pipeline-running');
+            }
+        }
+        
+        // Render functions
+        function renderCompetitors() {
+            competitorsGrid.innerHTML = '';
+            
+            Object.entries(competitors).forEach(([key, competitor]) => {
+                const card = document.createElement('div');
+                card.className = 'col-md-6 mb-3';
+                card.innerHTML = `
+                    <div class="card competitor-card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">${competitor.name}</h6>
+                            <p class="card-text text-muted small">${competitor.website}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">${competitor.priority}</span>
+                                <small class="text-muted">${competitor.keywords.length} keywords</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                competitorsGrid.appendChild(card);
+            });
+        }
+        
+        function renderAlerts() {
+            alertsList.innerHTML = '';
+            
+            if (alerts.length === 0) {
+                alertsList.innerHTML = '<p class="text-muted">No alerts at the moment.</p>';
+                return;
+            }
+            
+            alerts.forEach(alert => {
+                const alertEl = document.createElement('div');
+                alertEl.className = 'alert alert-card mb-3';
+                alertEl.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>${alert.company}</strong>
+                            <br>
+                            <small class="text-muted">${alert.message}</small>
+                        </div>
+                        <span class="badge bg-${getPriorityColor(alert.priority)}">${alert.priority}</span>
+                    </div>
+                    <small class="text-muted">${formatTime(alert.timestamp)}</small>
+                `;
+                alertsList.appendChild(alertEl);
+            });
+        }
+        
+        function renderRecentData(data) {
+            recentData.innerHTML = `
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Company</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.slice(0, 10).map(item => `
+                                <tr>
+                                    <td>${item.source || 'Unknown'}</td>
+                                    <td>${item.company || 'Unknown'}</td>
+                                    <td>${item.type || 'Unknown'}</td>
+                                    <td>${formatTime(item.timestamp)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+        
+        // Utility functions
+        function getPriorityColor(priority) {
+            switch (priority) {
+                case 'high': return 'danger';
+                case 'medium': return 'warning';
+                case 'low': return 'info';
+                default: return 'secondary';
+            }
+        }
+        
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString();
+        }
+        
+        function showToast(message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+    </script>
+</body>
+</html> 

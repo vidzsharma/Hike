@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Rush Gaming CI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border-radius: 16px 16px 0 0 !important;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .config-section {
+            margin-bottom: 2rem;
+        }
+        
+        .config-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .config-item h6 {
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .config-item .badge {
+            font-size: 0.7rem;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0.125rem;
+            font-size: 0.8rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 0.5rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        
+        .status-active { background-color: #10b981; }
+        .status-inactive { background-color: #ef4444; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line me-2"></i>
+                Rush Gaming CI
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/briefs">
+                    <i class="fas fa-file-alt me-1"></i>Briefs
+                </a>
+                <a class="nav-link active" href="/config">
+                    <i class="fas fa-cog me-1"></i>Config
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h2 mb-2">System Configuration</h1>
+                        <p class="text-muted mb-0">Manage competitors, alert rules, and system settings</p>
+                    </div>
+                    <a href="/" class="btn btn-back text-white">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- Configuration Tabs -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-cog me-2"></i>
+                        Configuration Settings
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="configTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="competitors-tab" data-bs-toggle="tab" data-bs-target="#competitors" type="button" role="tab">
+                                    <i class="fas fa-users me-2"></i>Competitors
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="alerts-tab" data-bs-toggle="tab" data-bs-target="#alerts" type="button" role="tab">
+                                    <i class="fas fa-bell me-2"></i>Alert Rules
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="system-tab" data-bs-toggle="tab" data-bs-target="#system" type="button" role="tab">
+                                    <i class="fas fa-server me-2"></i>System
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content mt-3" id="configTabsContent">
+                            <!-- Competitors Tab -->
+                            <div class="tab-pane fade show active" id="competitors" role="tabpanel">
+                                <div class="config-section">
+                                    <h5 class="mb-3">Monitored Competitors</h5>
+                                    {% if competitors %}
+                                        {% for key, competitor in competitors.items() %}
+                                        <div class="config-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <h6>{{ competitor.name }}</h6>
+                                                    <p class="text-muted mb-2">{{ competitor.website }}</p>
+                                                    <div class="mb-2">
+                                                        {% for keyword in competitor.keywords %}
+                                                        <span class="keyword-tag">{{ keyword }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div>
+                                                        <span class="badge bg-primary">{{ competitor.priority }}</span>
+                                                        <small class="text-muted ms-2">
+                                                            <i class="fas fa-twitter me-1"></i>{{ competitor.twitter_handle or 'N/A' }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <span class="status-indicator status-active"></span>
+                                                    <small class="text-success">Active</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No competitors configured</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Alert Rules Tab -->
+                            <div class="tab-pane fade" id="alerts" role="tabpanel">
+                                <div class="config-section">
+                                    <h5 class="mb-3">Alert Configuration</h5>
+                                    {% if alert_rules %}
+                                        {% for priority, rules in alert_rules.items() %}
+                                        <div class="config-item">
+                                            <h6 class="text-capitalize">{{ priority }} Priority Alerts</h6>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <strong>Keywords:</strong>
+                                                    <div class="mt-2">
+                                                        {% for keyword in rules.keywords %}
+                                                        <span class="keyword-tag">{{ keyword }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <strong>Channels:</strong>
+                                                    <div class="mt-2">
+                                                        {% for channel in rules.channels %}
+                                                        <span class="badge bg-info">{{ channel }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <strong>Escalation:</strong> {{ rules.escalation }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-bell fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No alert rules configured</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- System Tab -->
+                            <div class="tab-pane fade" id="system" role="tabpanel">
+                                <div class="config-section">
+                                    <h5 class="mb-3">System Information</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="config-item">
+                                                <h6>Data Sources</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-check text-success me-2"></i>Blogs & Newsrooms</li>
+                                                    <li><i class="fas fa-check text-success me-2"></i>Twitter</li>
+                                                    <li><i class="fas fa-check text-success me-2"></i>LinkedIn</li>
+                                                    <li><i class="fas fa-check text-success me-2"></i>Job Boards</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="config-item">
+                                                <h6>Storage & Notifications</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-check text-success me-2"></i>Airtable Integration</li>
+                                                    <li><i class="fas fa-check text-success me-2"></i>Notion Database</li>
+                                                    <li><i class="fas fa-check text-success me-2"></i>Slack Alerts</li>
+                                                    <li><i class="fas fa-check text-success me-2"></i>Email Notifications</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="config-item">
+                                        <h6>Automation Schedule</h6>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <strong>Data Collection:</strong><br>
+                                                <span class="badge bg-primary">Every 6 hours</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <strong>Weekly Briefs:</strong><br>
+                                                <span class="badge bg-success">Monday 9:00 AM IST</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <strong>Real-time Alerts:</strong><br>
+                                                <span class="badge bg-warning">Instant</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Configuration management functions
+        function editCompetitor(key) {
+            // This would open an edit modal
+            alert('Edit functionality would be implemented here for ' + key);
+        }
+        
+        function toggleCompetitor(key) {
+            // This would toggle competitor monitoring
+            alert('Toggle functionality would be implemented here for ' + key);
+        }
+        
+        function testAlert(priority) {
+            // This would send a test alert
+            alert('Test alert functionality would be implemented here for ' + priority + ' priority');
+        }
+        
+        // Auto-refresh configuration every 2 minutes
+        setInterval(() => {
+            // This would refresh configuration data
+        }, 120000);
+    </script>
+</body>
+</html> 

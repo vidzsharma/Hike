@@ -1,0 +1,57 @@
+{
+  "mpl": {
+    "name": "Mobile Premier League",
+    "website": "https://mpl.live",
+    "blog_url": "https://mpl.live/blog",
+    "twitter_handle": "PlayMPL",
+    "linkedin_company": "mobile-premier-league",
+    "careers_url": "https://careers.mpl.live",
+    "keywords": ["fantasy sports", "cash games", "tournaments", "esports", "real money gaming"],
+    "alert_keywords": ["funding", "series", "acquisition", "launch", "partnership", "expansion"],
+    "priority": "high"
+  },
+  "winzo": {
+    "name": "WinZO Games",
+    "website": "https://winzogames.com",
+    "blog_url": "https://winzogames.com/blog",
+    "twitter_handle": "WinZOgames",
+    "linkedin_company": "winzo-games",
+    "careers_url": "https://winzogames.com/careers",
+    "keywords": ["vernacular games", "micro-transactions", "developer fund", "skill gaming", "bharat"],
+    "alert_keywords": ["funding", "developer fund", "partnership", "expansion", "hiring"],
+    "priority": "high"
+  },
+  "zupee": {
+    "name": "Zupee",
+    "website": "https://zupee.com",
+    "blog_url": "https://zupee.com/blog",
+    "twitter_handle": "Zupee_official",
+    "linkedin_company": "zupee",
+    "careers_url": "https://zupee.com/careers",
+    "keywords": ["ludo", "skill-based", "responsible gaming", "casual gaming", "real money"],
+    "alert_keywords": ["funding", "launch", "partnership", "responsible gaming", "expansion"],
+    "priority": "medium"
+  },
+  "gameskraft": {
+    "name": "Gameskraft",
+    "website": "https://gameskraft.com",
+    "blog_url": "https://gameskraft.com/blog",
+    "twitter_handle": "GameskraftTech",
+    "linkedin_company": "gameskraft",
+    "careers_url": "https://jobs.gameskraft.com",
+    "keywords": ["rummy", "GST", "profitability", "standalone apps", "real money gaming"],
+    "alert_keywords": ["GST", "legal", "profit", "funding", "acquisition", "launch"],
+    "priority": "high"
+  },
+  "dream_sports": {
+    "name": "Dream Sports",
+    "website": "https://dreamsports.group",
+    "blog_url": "https://dreamsports.group/blog",
+    "twitter_handle": "DreamSportsHQ",
+    "linkedin_company": "dream-sports",
+    "careers_url": "https://dreamsports.group/careers",
+    "keywords": ["fantasy sports", "Dream11", "casual gaming", "carrom", "real money gaming"],
+    "alert_keywords": ["funding", "launch", "partnership", "expansion", "acquisition"],
+    "priority": "medium"
+  }
+} 

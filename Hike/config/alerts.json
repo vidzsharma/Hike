@@ -1,0 +1,121 @@
+{
+  "high_priority": {
+    "keywords": [
+      "(?i)(funding|series|seed|pre-seed|acqui-hire|acquired|investment|raise)",
+      "(?i)(launch|token|NFT|web3|blockchain|cryptocurrency)",
+      "(?i)(C-level|VP|Vice President|Chief|Head of|Director)",
+      "(?i)(partnership|collaboration|tie-up|alliance|merger)",
+      "(?i)(expansion|international|global|new market|geography)",
+      "(?i)(GST|legal|regulatory|compliance|tax|litigation)"
+    ],
+    "channels": ["slack", "email"],
+    "escalation": "immediate",
+    "recipients": ["leadership", "product", "marketing"],
+    "slack_channel": "#market-intel",
+    "email_template": "high_priority_alert"
+  },
+  "medium_priority": {
+    "keywords": [
+      "(?i)(hiring|job|career|recruitment|talent)",
+      "(?i)(product|feature|update|improvement|enhancement)",
+      "(?i)(marketing|campaign|promotion|advertising)",
+      "(?i)(user|customer|growth|acquisition|retention)",
+      "(?i)(technology|tech|engineering|development)",
+      "(?i)(revenue|profit|financial|earnings|performance)"
+    ],
+    "channels": ["slack"],
+    "escalation": "daily",
+    "recipients": ["product", "marketing", "growth"],
+    "slack_channel": "#market-intel",
+    "email_template": "medium_priority_alert"
+  },
+  "low_priority": {
+    "keywords": [
+      "(?i)(blog|article|press release|news|announcement)",
+      "(?i)(update|improvement|enhancement|fix|bug)",
+      "(?i)(social|community|engagement|interaction)",
+      "(?i)(award|recognition|achievement|milestone)",
+      "(?i)(event|conference|meetup|workshop)"
+    ],
+    "channels": ["weekly_brief"],
+    "escalation": "weekly",
+    "recipients": ["general"],
+    "slack_channel": "#market-intel",
+    "email_template": "low_priority_alert"
+  },
+  "company_specific": {
+    "mpl": {
+      "high_priority": [
+        "(?i)(esports|tournament|prize pool|championship)",
+        "(?i)(fantasy|sports|cricket|football)",
+        "(?i)(international|US|Europe|Southeast Asia)"
+      ]
+    },
+    "winzo": {
+      "high_priority": [
+        "(?i)(developer fund|game developer|indie)",
+        "(?i)(vernacular|regional|language|bharat)",
+        "(?i)(micro-transaction|small amount|affordable)"
+      ]
+    },
+    "zupee": {
+      "high_priority": [
+        "(?i)(ludo|board game|casual)",
+        "(?i)(responsible gaming|safety|wellbeing)",
+        "(?i)(family|friends|social gaming)"
+      ]
+    },
+    "gameskraft": {
+      "high_priority": [
+        "(?i)(GST|tax|legal|compliance)",
+        "(?i)(rummy|card game|traditional)",
+        "(?i)(profit|revenue|financial performance)"
+      ]
+    },
+    "dream_sports": {
+      "high_priority": [
+        "(?i)(Dream11|fantasy sports|cricket)",
+        "(?i)(casual gaming|carrom|pool)",
+        "(?i)(IPL|cricket league|sports partnership)"
+      ]
+    }
+  },
+  "notification_settings": {
+    "slack": {
+      "webhook_url": "${SLACK_WEBHOOK_URL}",
+      "channel": "#market-intel",
+      "username": "Rush CI Bot",
+      "icon_emoji": ":chart_with_upwards_trend:"
+    },
+    "email": {
+      "from_address": "ci-alerts@rushgaming.com",
+      "to_addresses": ["leadership@rushgaming.com", "product@rushgaming.com"],
+      "subject_prefix": "[RUSH CI]",
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587
+    },
+    "escalation": {
+      "immediate": {
+        "slack_mentions": ["@here", "@leadership"],
+        "email_priority": "high",
+        "retry_attempts": 3
+      },
+      "daily": {
+        "slack_mentions": [],
+        "email_priority": "normal",
+        "retry_attempts": 1
+      },
+      "weekly": {
+        "slack_mentions": [],
+        "email_priority": "low",
+        "retry_attempts": 1
+      }
+    }
+  },
+  "rate_limiting": {
+    "max_alerts_per_hour": 10,
+    "max_alerts_per_day": 50,
+    "cooldown_period_minutes": 30,
+    "deduplication_window_hours": 24
+  }
+} 
